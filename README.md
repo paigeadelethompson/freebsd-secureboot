@@ -16,22 +16,21 @@ Platform Setup Mode is a special TPM state that allows platform owners to take c
 
 This mode is typically enabled by default on new systems or can be enabled through UEFI settings. It's crucial for taking ownership of your system's security.
 
-### Why Not Just Use Linux Tools?
+### The Microsoft Dependency Problem
 
-Linux systems typically use tools like `mokutil` and shims to manage secure boot. While these work, they have several limitations:
-- They rely on the Microsoft CA certificate
-- They require complex key management through the OS
-- They often require multiple reboots
-- They can be problematic with certain UEFI implementations
+Most systems today rely on Microsoft's UEFI Certificate Authority (CA) for secure boot. This means:
+- Your system's security is tied to Microsoft's certificate
+- You're dependent on Microsoft's key management
+- You can't fully control your system's security
+- You're limited to Microsoft's security policies
+
+While tools like `mokutil` and shims exist to work within this system, they don't solve the fundamental issue of Microsoft's control over your system's security. They're workarounds rather than true solutions.
 
 ### The FreeBSD Approach
 
-FreeBSD's secure boot implementation is designed to be more straightforward and secure:
-- Direct TPM programming during EFI runtime
+While FreeBSD may eventually support `mokutil`-style tools, this direct TPM programming approach offers several advantages:
 - No dependency on Microsoft's certificate
 - Single-step platform key installation
-- Better compatibility with various UEFI implementations
-- Native support for password-protected keys
 
 The tools in this repository make it easy to:
 1. Take ownership of your system's security
@@ -39,7 +38,7 @@ The tools in this repository make it easy to:
 3. Manage TPM settings
 4. Configure secure boot policies
 
-This approach is more secure and user-friendly than the Linux alternatives, as it gives you complete control over your system's security without relying on third-party certificates or complex key management schemes.
+This approach gives you complete control over your system's security without relying on third-party certificates or complex key management schemes. It's particularly valuable for users who want full control over their system's security, regardless of future FreeBSD secure boot developments.
 
 ## Components
 
@@ -170,6 +169,7 @@ For detailed documentation, see the man pages:
 ## TODO
 
 - Testing and Validation:
+  - `keyctl` to generate the PK p12, but in general FreeBSD could benefit from a system keyring, module signing, and measured/trusted boot (liek IMA/EVM or Windows Defender Application Control / Applocker.)
   - Need to test on various TPM 1.2 and 2.0 hardware
   - Need to verify P12 file parsing with different key formats
   - Need to test error handling and recovery scenarios
