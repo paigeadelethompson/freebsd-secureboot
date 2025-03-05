@@ -1,0 +1,145 @@
+.TH TPMCTL 8 "March 2024" "FreeBSD System Manager's Manual"
+.SH NAME
+tpmctl \- TPM Control Utility
+.SH SYNOPSIS
+.B tpmctl
+[\fB\-i\fR | \fB\-\-info\fR]
+[\fB\-\-install\-pk\fR]
+[\fB\-l\fR | \fB\-\-list\-devices\fR]
+[\fB\-\-device\fR \fInum\fR]
+[\fB\-\-tis\fR]
+[\fB\-v\fR | \fB\-\-verbose\fR]
+[\fB\-w\fR | \fB\-\-password\fR \fIpass\fR]
+[\fB\-\-help\fR]
+[\fIp12_file\fR]
+.SH DESCRIPTION
+The
+.B tpmctl
+utility provides a command-line interface for managing TPM (Trusted Platform Module) devices
+on FreeBSD systems. It supports both TPM 1.2 and 2.0 devices, and can be used to list
+available TPM devices, show detailed TPM information, and install platform keys.
+.PP
+The utility supports both CRB (Command Response Buffer) and TIS (TIS Interface Specification)
+interfaces, with CRB being the preferred interface for TPM 2.0 devices.
+.SH OPTIONS
+The following options are available:
+.TP
+\fB\-i\fR, \fB\-\-info\fR
+Show detailed TPM information, including:
+.RS
+.IP \(bu 2
+TPM version (1.2 or 2.0)
+.IP \(bu 2
+Manufacturer ID
+.IP \(bu 2
+Maximum RSA key size
+.IP \(bu 2
+Number of PCR banks
+.IP \(bu 2
+TPM state
+.IP \(bu 2
+Platform hierarchy status
+.IP \(bu 2
+Setup mode status
+.RE
+.TP
+\fB\-\-install\-pk\fR
+Install a platform key from the specified P12 file. This option requires a P12 file
+to be specified as an argument.
+.TP
+\fB\-l\fR, \fB\-\-list\-devices\fR
+List all available TPM devices, showing their paths and interface types (CRB or TIS).
+.TP
+\fB\-\-device\fR \fInum\fR
+Select a specific TPM device by number (0-based). This is useful when multiple TPM
+devices are available on the system.
+.TP
+\fB\-\-tis\fR
+Force the use of the TIS interface instead of the CRB interface. This is useful for
+legacy TPM 1.2 devices that only support TIS.
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Enable verbose output. Multiple instances of this option increase the verbosity level:
+.RS
+.IP \(bu 2
+\fB\-v\fR: Basic operation status messages
+.IP \(bu 2
+\fB\-vv\fR: Detailed progress information
+.IP \(bu 2
+\fB\-vvv\fR: Technical details and internal state
+.RE
+.TP
+\fB\-w\fR, \fB\-\-password\fR \fIpass\fR
+Specify the password for the P12 file. If not provided, the utility will prompt for
+the password when needed.
+.TP
+\fB\-\-help\fR
+Display usage information and exit.
+.TP
+\fIp12_file\fR
+The path to the P12 file containing the platform key to install. This argument is
+required when using the \fB\-\-install\-pk\fR option.
+.SH EXAMPLES
+List available TPM devices:
+.PP
+.RS
+.nf
+$ tpmctl -l
+.fi
+.RE
+.PP
+Show detailed TPM information:
+.PP
+.RS
+.nf
+$ tpmctl -i
+.fi
+.RE
+.PP
+Install a platform key with verbose output:
+.PP
+.RS
+.nf
+$ tpmctl --install-pk -v platform_key.p12
+.fi
+.RE
+.PP
+Install a platform key with a password:
+.PP
+.RS
+.nf
+$ tpmctl --install-pk -w mypassword platform_key.p12
+.fi
+.RE
+.PP
+Use a specific TPM device with maximum verbosity:
+.PP
+.RS
+.nf
+$ tpmctl -i --device 1 -vvv
+.fi
+.RE
+.SH EXIT STATUS
+The
+.B tpmctl
+utility exits with one of the following values:
+.TP
+\fB0\fR
+Success.
+.TP
+\fB1\fR
+An error occurred during execution.
+.TP
+\fB2\fR
+Invalid command line arguments.
+.SH SEE ALSO
+.BR tpm (4),
+.BR tpmrm (4)
+.SH AUTHORS
+The
+.B tpmctl
+utility was developed for the FreeBSD Project.
+.SH BUGS
+Please report bugs to the FreeBSD bug tracking system at
+.UR https://bugs.freebsd.org/
+.UE . 

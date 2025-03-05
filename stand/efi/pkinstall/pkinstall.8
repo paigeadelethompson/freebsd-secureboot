@@ -1,0 +1,99 @@
+.Dd $Mdocdate$
+.Dt PKINSTALL 8
+.Os
+.Sh NAME
+.Nm pkinstall
+.Nd EFI Platform Key Installer
+.Sh SYNOPSIS
+.Nm
+.Op Fl v
+.Op Fl i | Fl c | Fl k Ar p12_file Op Ar password
+.Sh DESCRIPTION
+.Nm
+is an EFI application designed to manage TPM platform keys during EFI runtime.
+It can be used to show TPM status, clear the TPM, and install platform keys from P12 files.
+.Pp
+The application is designed to run from the EFI shell when the TPM is in platform setup mode.
+It supports both TPM 1.2 and 2.0 devices and can parse P12 files without OpenSSL dependency.
+.Pp
+The following options are available:
+.Bl -tag -width indent
+.It Fl i , Fl -info
+Show detailed TPM information, including:
+.Bl -bullet -compact
+.It
+TPM version and manufacturer
+.It
+Maximum RSA key size
+.It
+Number of PCR banks
+.It
+Platform hierarchy status
+.It
+Setup mode status
+.It
+Auth settings for all hierarchies
+.El
+.It Fl c , Fl -clear
+Clear the TPM and reset it to factory state.
+This operation:
+.Bl -bullet -compact
+.It
+Requires platform hierarchy to be enabled
+.It
+Requires user confirmation
+.It
+Cannot be undone
+.El
+.It Fl k Ar p12_file , Fl -install-pk Ar p12_file
+Install a platform key from the specified P12 file.
+The optional password parameter is used if the P12 file is password-protected.
+.It Fl v , Fl -verbose
+Enable verbose output. Multiple instances increase verbosity level.
+.El
+.Sh EXAMPLES
+Show TPM information:
+.Dl pkinstall.efi -i
+.Pp
+Clear TPM (requires confirmation):
+.Dl pkinstall.efi --clear
+.Pp
+Install platform key from P12 file:
+.Dl pkinstall.efi -k platform_key.p12
+.Pp
+Install password-protected platform key:
+.Dl pkinstall.efi -k platform_key.p12 mypassword
+.Pp
+Show detailed TPM information with verbose output:
+.Dl pkinstall.efi -v -i
+.Sh EXIT STATUS
+.Ex -std
+.Bl -tag -width indent
+.It 0
+Success
+.It 1
+Invalid parameters
+.It 2
+TPM not found
+.It 3
+Operation failed
+.It 4
+Operation cancelled by user
+.El
+.Sh SEE ALSO
+.Xr tpm 4 ,
+.Xr tpmrm 4
+.Sh AUTHORS
+.An -nosplit
+The
+.Nm
+utility was written by
+.An "Paige Thompson" .
+.Sh BUGS
+The P12 file parsing functionality is currently a placeholder and needs to be implemented.
+.Sh SECURITY CONSIDERATIONS
+The clear TPM operation is a destructive operation that cannot be undone.
+It should only be performed when absolutely necessary and with proper authorization.
+.Pp
+Platform key installation should only be performed when the TPM is in platform setup mode
+and with proper authorization. 
